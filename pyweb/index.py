@@ -1,38 +1,33 @@
 import tornado.web
 import tornado.websocket
 import tornado.ioloop
+import json
 
 
-class basicRequestHandler(tornado.websocket.WebSocketHandler):  # Class to create a server to handle the request
+class listRequestHandler(tornado.websocket.WebSocketHandler):
+    # http://govinda:8888/fruits
+    # That's how a get request will look like
     def get(self):
-        self.write('Hello, world, this is a Python on the backend')  # printing out the message to webpage
+        fh = open('D:/Studies/Hussein Nasser/Python on the Backend/pyweb/list.txt', 'r')
+        fruits = fh.read().splitlines()
+        for f in fruits:
+            print(f)
+        fh.close()
+        self.write(json.dumps(fruits))
 
-class queryParamRequestHandler(tornado.websocket.WebSocketHandler):  # Class to create a server to handle the request
-    def get(self):
-        num = self.get_argument('num')
-        if (num.isdigit()):
-            r = "odd" if int(num)%2 != 0 else "even"
-            self.write(f"{num} is {r}")
-        else:
-            self.write(f"{num} is not a valid integer")
-
-
-class listRequestHandler(tornado.websocket.WebSocketHandler):  # Class to create a server to handle the request
-    def get(self):
-        self.render('index.html')
-
-
-class resourceParamRequestHandler(tornado.websocket.WebSocketHandler):  # Class to create a server to handle the request
-    def get(self, studentName, courseId):
-        self.write(f'Welcome {studentName} with course id {courseId}')
+    def post(self):
+        # http://govinda:8888/fruits?fruit=Mango 
+        # This is how a POST request will look
+        fruit = self.get_argument('fruit')
+        fh = open('D:/Studies/Hussein Nasser/Python on the Backend/pyweb/list.txt', 'a')
+        fh.write(f'\n{fruit}')
+        fh.close()
+        self.write(json.dumps({'message':'Your fruit has been added successfully!'}))
 
 
 if __name__ == '__main__':
     app = tornado.web.Application([
-        (r'/', basicRequestHandler),  # Calling out the class with the / request
-        (r'/animal', listRequestHandler),
-        (r'/isEven', queryParamRequestHandler),
-        (r'/students/([a-z]+)/([0-9]+)', resourceParamRequestHandler)
+        (r'/fruits', listRequestHandler),
     ])
  
     port = 8888
