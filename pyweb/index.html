@@ -4,16 +4,36 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Animal</title>
+    <title>Fruits API</title>
 </head>
 <body>
-    <h1>Hello world, you consumed an html resource </h1>
+    Fruits
+    <select id="lstFruit"></select>
+    <label>Add new fruit</label>
+    <input type="text" id="textfruit"/>
+    <button id="btnAdd">add fruit</button>
 
-    <select>
-        <option>Snake</option>
-        <option>Elephant</option>
-        <option>Bird</option>
-        <option>Bear</option>
-    </select>
+    <script>
+        const lstFruit = document.getElementById("lstFruit")
+        const addFruit = document.getElementById("btnAdd")
+        const textfruit = document.getElementById("textfruit")
+
+        fetch("http://govinda:8888/fruits")
+        .then(response => response.json())
+        .then(jsonResponse => jsonResponse.forEach(element => {
+            
+            let opt = document.createElement("option")
+            opt.textContent = element
+            lstFruit.appendChild(opt)
+        }))
+
+        addFruit.addEventListener("click", e =>{
+
+            fetch(`http://govinda:8888/fruits?fruit=${textfruit.value}`, {"method" : "POST"})
+            .then(response => response.json())
+            .then(jsonResponse => alert(jsonResponse.message))
+
+        })
+    </script>
 </body>
 </html>
