@@ -4,6 +4,12 @@ import tornado.ioloop
 import json
 
 
+# Root handler to redirect it to index.html
+class mainRequestHandler(tornado.websocket.WebSocketHandler):
+    def get(self):
+        self.render('index.html')
+
+
 class listRequestHandler(tornado.websocket.WebSocketHandler):
     # http://govinda:8888/fruits
     # That's how a get request will look like
@@ -27,6 +33,7 @@ class listRequestHandler(tornado.websocket.WebSocketHandler):
 
 if __name__ == '__main__':
     app = tornado.web.Application([
+        (r'/', mainRequestHandler),  # Root handler
         (r'/fruits', listRequestHandler),
     ])
  
